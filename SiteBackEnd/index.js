@@ -1,5 +1,6 @@
 import express from 'express'
 import ProductRoute from './Routes/ProductRoute.js'
+import UserRoutes from './Routes/UserRoutes.js'
 import connectToDb from './Config/DataBase.js'
 import cors from 'cors'
 import morgan from 'morgan'
@@ -22,7 +23,7 @@ app.use(morgan('dev'))
 
 // Routes-
 app.use('/api/v1',ProductRoute)
-
+app.use('/api/v1',UserRoutes)
 
 app.get('/',(req,res)=>{
 res.send("Hello online users")

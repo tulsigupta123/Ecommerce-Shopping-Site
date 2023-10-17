@@ -1,4 +1,5 @@
 import productModel from '../Model/ProductModel.js'
+import APIFeatures from '../Utils/APIFeatures.js'
 
 // Create Product(Only for Admin)-
 export const createProduct = async(req,res) => {
@@ -30,7 +31,7 @@ try {
 export const getSingleProduct = async(req,res)=>{
     try {
         const {id} = req.params;
-        const product = await productModel.findById(id);
+        const product = await productModel.find({id});
         if(!product){
             return res.status(400).send({
                 success:false,
@@ -51,10 +52,35 @@ export const getSingleProduct = async(req,res)=>{
     }
 }
 
+// Get All Product(with search,filter,pagination)-
 
+export const getAllProducts = async (req, res) => {
+    const resultPerPage = 8;
+    const productsCount = await productModel.countDocuments();
+  
+    const apiFeature = new APIFeatures(productModel.find(), req.query)
+      .search()
+      .filter();
+  
+    let products = await apiFeature.query;
+  
+    let filteredProductsCount = products.length;
+  
+    apiFeature.pagination(resultPerPage);
+  
+    products = await apiFeature.query;
+  
+    res.status(200).send({
+      success: true,
+      products,
+      productsCount,
+      resultPerPage,
+      filteredProductsCount,
+    });
+  };
 
-// Get all products-
-export const getAllProducts = async(req,res) => {
+// Get all products(Only for admin)-
+export const getAdminProducts = async(req,res) => {
  try {
     const products = await productModel.find({})
     if(!products){
@@ -66,6 +92,7 @@ export const getAllProducts = async(req,res) => {
     res.status(200).send({
         success:true,
         message:"All Products List",
+        productCount:products.length,
         products
     })
  } catch (error) {

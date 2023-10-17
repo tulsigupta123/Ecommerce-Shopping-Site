@@ -3,7 +3,8 @@ const router = express.Router()
 import {getAllProducts,createProduct,updateProduct,deleteProduct,getSingleProduct} from '../Controllers/ProductController.js'
 
 // Get single product-
-router.get('/product',getSingleProduct)
+router.get('/product/:id',getSingleProduct)
+
 // Get all products-
 router.get('/all-products',getAllProducts)
 
